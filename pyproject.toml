@@ -1,0 +1,13 @@
+[project]
+name = "a-maze-ing"
+version = "1.0.0"
+description = "Maze generation and solving project (42 School)"
+requires-python = ">=3.10"
+
+authors = [
+    { name = "sarfreit" },
+    { name = "bramalho" }
+]
+
+[tool.flake8]
+exclude = ["venv", "__pycache__", "mlx_CLXV"]
