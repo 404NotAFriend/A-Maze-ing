@@ -120,7 +120,7 @@ def break_walls(maze: Maze, logo_pos: list[tuple[int, int]]) -> None:
     grid = maze.grid
     height = maze.grid_height
     width = maze.grid_width
-    attempts = width * height // 2
+    attempts = width * height
 
     while attempts:
         attempts -= 1
@@ -160,11 +160,11 @@ def add_42_logo(maze: Maze) -> list[tuple[int, int]]:
     and the maze without the logo
     """
     pattern = [
-        [1, 0, 0, 1, 0, 1, 1, 1, 1],
-        [1, 0, 0, 1, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 0, 1, 1, 1, 1],
-        [1, 0, 0, 0, 0, 1, 0, 0, 0],
-        [1, 0, 0, 0, 0, 1, 1, 1, 1],
+        [1, 0, 1, 0, 1, 1, 1],
+        [1, 0, 1, 0, 0, 0, 1],
+        [1, 1, 1, 0, 1, 1, 1],
+        [0, 0, 1, 0, 1, 0, 0],
+        [0, 0, 1, 0, 1, 1, 1],
         ]
 
     pat_w = len(pattern[0])

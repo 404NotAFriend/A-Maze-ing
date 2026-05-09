@@ -1,6 +1,4 @@
 import random
-import time
-import os
 from mazegen.Maze import Maze
 from mazegen.solver import bfs_solve_maze
 from mazegen.generator import (dfs_generator,
@@ -8,7 +6,6 @@ from mazegen.generator import (dfs_generator,
                                check_open_areas,
                                break_walls,
                                add_42_logo)
-from render.ascii_renderer import render_ascii
 from utils.export_utils import export_maze
 
 
@@ -94,21 +91,6 @@ class MazeGenerator:
         self.path = path
         return path
 
-    def render(self, show_path: bool) -> None:
-        """
-        Renders the maze and shows it on the terminal
-        """
-        try:
-            if not show_path:
-                render_ascii(self.maze.grid, self.maze)
-
-            else:
-                for i in range(1, len(self.path) + 1):
-                    os.system("clear")
-                    render_ascii(self.maze.grid, self.maze, self.path[:i])
-                    time.sleep(0.05)
-        except Exception:
-            print("render(): Failed to show the maze.")
 
     def export(self, output_file: str) -> None:
         """

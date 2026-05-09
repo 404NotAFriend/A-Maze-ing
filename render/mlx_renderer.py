@@ -1,42 +1,18 @@
 from mlx import Mlx
 from render.Assets import Assets
-from render.resize import generate_all_assets
+from mazegen.Maze import Maze
+from render.converter import generate_all_assets
+from render.draw_maze import draw_maze
 import os
+import time
 
 
 # ---------------------------------
 # WINDOW
 # ---------------------------------
 
-WINDOW_WIDTH = 1650
-WINDOW_HEIGHT = 1350
-
-TILE_SIZE = 64
-
-
-# ---------------------------------
-# SIMPLE TEST MAZE
-# ---------------------------------
-
-maze = [
-    [1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 1],
-    [1, 0, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 1, 0, 1],
-    [1, 1, 1, 0, 1, 0, 1],
-    [1, 0, 0, 0, 0, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1],
-]
-
-
-# ---------------------------------
-# ENTRY / EXIT
-# ---------------------------------
-
-ENTRY = (1, 0)
-
-EXIT = (5, 6)
-
+MAX_WINDOW_WIDTH = 1400
+MAX_WINDOW_HEIGHT = 1800
 
 # ---------------------------------
 # CLOSE WINDOW
@@ -48,10 +24,6 @@ def close(param) -> None:
     os._exit(0)
 
 
-# ---------------------------------
-# ESC KEY
-# ---------------------------------
-
 def key_hook(key, param) -> None:
     """Close with ESC"""
 
@@ -62,85 +34,68 @@ def key_hook(key, param) -> None:
 
 
 # ---------------------------------
-# DRAW MAZE
+# TILE SIZE
 # ---------------------------------
 
-def draw_maze(
-    mlx: Mlx,
-    mlx_ptr,
-    win_ptr,
-    assets: Assets
-) -> None:
+def calculate_tile_size(
+    maze: Maze) -> int:
     """
-    Draw only the maze
+    Dynamically calculate tile size
+    so the maze fits the window
     """
 
-    for grid_y, row in enumerate(maze):
+    maze_height = maze.grid_height
 
-        for grid_x, cell in enumerate(row):
+    maze_width = maze.grid_width
 
-            # Convert grid -> pixels
-            screen_x = (
-                grid_x * TILE_SIZE
-            )
+    tile_width = (
+        MAX_WINDOW_WIDTH // maze_width
+    )
 
-            screen_y = (
-                grid_y * TILE_SIZE
-            )
+    tile_height = (
+        MAX_WINDOW_HEIGHT // maze_height
+    )
 
-            # ---------------------
-            # ENTRY
-            # ---------------------
-
-            if (
-                grid_x,
-                grid_y
-            ) == ENTRY:
-
-                tile = assets.floor_normal
-
-            # ---------------------
-            # EXIT
-            # ---------------------
-
-            elif (
-                grid_x,
-                grid_y
-            ) == EXIT:
-
-                tile = assets.floor_normal
-
-            # ---------------------
-            # WALL
-            # ---------------------
-
-            elif cell == 1:
-
-                tile = assets.wall
-
-            # ---------------------
-            # FLOOR
-            # ---------------------
-
-            else:
-
-                tile = assets.floor_normal
-
-            # Draw tile
-            mlx.mlx_put_image_to_window(
-                mlx_ptr,
-                win_ptr,
-                tile,
-                screen_x,
-                screen_y
-            )
-
+    return min(
+        tile_width,
+        tile_height
+    )
 
 # ---------------------------------
 # MAIN WINDOW
 # ---------------------------------
 
-def mlx_window() -> None:
+def mlx_window(maze: Maze,
+               path: list[tuple[int, int]],
+               theme: str) -> None:
+
+    # -------------------------
+    # TILE AND WINDOW SIZE
+    # -------------------------
+
+    tile_size = calculate_tile_size(
+        maze
+    )
+
+    window_width = (
+        maze.grid_width * tile_size
+    )
+
+    window_height = (
+        maze.grid_height * tile_size
+    )
+
+    # -------------------------
+    # GENERATE ASSETS
+    # -------------------------
+
+    generate_all_assets(
+        tile_size
+    )
+
+    # -------------------------
+    # MLX
+    # -------------------------
 
     mlx = Mlx()
 
@@ -148,34 +103,13 @@ def mlx_window() -> None:
 
     win_ptr = mlx.mlx_new_window(
         mlx_ptr,
-        WINDOW_WIDTH,
-        WINDOW_HEIGHT,
+        window_width,
+        window_height,
         "A-MAZE-ING"
     )
 
-    # -------------------------
-    # HOOKS
-    # -------------------------
-
-    mlx.mlx_hook(
-        win_ptr,
-        33,
-        0,
-        close,
-        None
-    )
-
-    mlx.mlx_key_hook(
-        win_ptr,
-        key_hook,
-        None
-    )
-
-    # -------------------------
-    # GENERATE ASSETS
-    # -------------------------
-
-    generate_all_assets(TILE_SIZE)
+    mlx.mlx_hook(win_ptr, 33, 0, close, None)
+    mlx.mlx_key_hook(win_ptr, key_hook, None)
 
     # -------------------------
     # ASSETS
@@ -184,22 +118,25 @@ def mlx_window() -> None:
     assets = Assets(
         mlx,
         mlx_ptr,
-        TILE_SIZE
+        tile_size,
+        theme
     )
 
     # -------------------------
-    # DRAW MAZE
+    # DRAW
     # -------------------------
 
-    draw_maze(
-        mlx,
-        mlx_ptr,
-        win_ptr,
-        assets
-    )
+    for i in range(1, len(path) + 1):
+        draw_maze(
+            maze,
+            mlx,
+            mlx_ptr,
+            win_ptr,
+            tile_size,
+            assets,
+            maze.grid,
+            path[:i]
+        )
 
-    # -------------------------
-    # LOOP
-    # -------------------------
-
+        time.sleep(0.1)
     mlx.mlx_loop(mlx_ptr)

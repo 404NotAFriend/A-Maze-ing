@@ -33,6 +33,13 @@ python3 -m pip install ./mlx-2.2-py3-ubuntu-any.whl
 man -M mlx_CLXV/man mlx
 ```
 
+## Install Lib Pil and Convert (on venv)
+```bash
+pip install pillow
+git clone <brew>
+brew install magick
+```
+
 ## 📦 Config Parser (parsing/config_parser.py)
 
 #### Features:
@@ -134,8 +141,8 @@ maze_to_hex()
   ↓
 export_maze()
   ↓
-render()             ⚠️ !!! ONGOING !!!
+render()
   ↓
-menu()               ⚠️
+menu()               
   ↓
 Design Duck (easy / hard mode; commands to play instead of using the maze solver algorithm) 
