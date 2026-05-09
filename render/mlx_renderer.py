@@ -11,8 +11,8 @@ import time
 # WINDOW
 # ---------------------------------
 
-MAX_WINDOW_WIDTH = 1400
-MAX_WINDOW_HEIGHT = 1800
+MAX_WINDOW_WIDTH = 1600
+MAX_WINDOW_HEIGHT = 900
 
 # ---------------------------------
 # CLOSE WINDOW
@@ -125,18 +125,25 @@ def mlx_window(maze: Maze,
     # -------------------------
     # DRAW
     # -------------------------
+    
+    frame = [0]
+    last_time = [time.time()]
 
-    for i in range(1, len(path) + 1):
-        draw_maze(
-            maze,
-            mlx,
-            mlx_ptr,
-            win_ptr,
-            tile_size,
-            assets,
-            maze.grid,
-            path[:i]
-        )
+    def on_loop(param) -> None:
+        now = time.time()
+        if frame[0] <= len(path) and now - last_time[0] >= 0.05:
+            draw_maze(
+                maze,
+                mlx,
+                mlx_ptr,
+                win_ptr,
+                tile_size,
+                assets,
+                maze.grid,
+                path[:frame[0]] if frame[0] > 0 else None,
+            )
+            frame[0] += 1
+            last_time[0] = now
 
-        time.sleep(0.1)
+    mlx.mlx_loop_hook(mlx_ptr, on_loop, None)  
     mlx.mlx_loop(mlx_ptr)
