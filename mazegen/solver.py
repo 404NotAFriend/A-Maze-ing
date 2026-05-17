@@ -2,7 +2,8 @@ from collections import deque
 from mazegen.Maze import Maze
 
 
-def bfs_solve_maze(maze: Maze) -> list[tuple[int, int]]:
+def bfs_solve_maze(maze: Maze) -> tuple[list[tuple[int, int]],
+                                        list[tuple[int, int]]]:
     """
     Finds the shortest path to solve the maze
     With Breadth First Search (BFS)
@@ -19,6 +20,7 @@ def bfs_solve_maze(maze: Maze) -> list[tuple[int, int]]:
 
     queue: deque[tuple[int, int]] = deque()
     visited: set[tuple[int, int]] = set()
+    explored: list[tuple[int, int]] = []  # To show the path finder animation
     parent: dict[tuple[int, int], tuple[int, int]] = {}  # prev and curr pos
 
     start = (entry_y, entry_x)
@@ -27,6 +29,7 @@ def bfs_solve_maze(maze: Maze) -> list[tuple[int, int]]:
     # start -> entry point
     queue.append(start)
     visited.add(start)
+    explored.append(start)
 
     directions = [
         (0, -1),  # UP
@@ -60,11 +63,12 @@ def bfs_solve_maze(maze: Maze) -> list[tuple[int, int]]:
                 continue
 
             visited.add((new_y, new_x))
+            explored.append((new_y, new_x))
             parent[(new_y, new_x)] = (y, x)
             queue.append((new_y, new_x))
 
     try:
-        # Reconstruct the path
+        # Reconstruct the path (option 2 on the banner menu)
         path: list[tuple[int, int]] = []
         current = end
 
@@ -76,5 +80,5 @@ def bfs_solve_maze(maze: Maze) -> list[tuple[int, int]]:
         # Get the result from the start to the exit point
         path.reverse()
     except KeyError:
-        return []
-    return path
+        return [], explored
+    return path, explored

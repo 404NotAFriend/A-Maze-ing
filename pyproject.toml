@@ -1,7 +1,11 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "a-maze-ing"
+name = "mazegen"
 version = "1.0.0"
-description = "Maze generation and solving project (42 School)"
+description = "Reusable maze generator package from A-Maze-ing"
 requires-python = ">=3.10"
 
 authors = [
@@ -9,5 +13,12 @@ authors = [
     { name = "bramalho" }
 ]
 
+[tool.setuptools]
+packages = ["mazegen"]
+
 [tool.flake8]
 exclude = ["venv", "__pycache__", "mlx_CLXV"]
+
+[tool.mypy]
+exclude = ["venv", "mlx_CLXV"]
+disable_error_code = ["import-untyped"]

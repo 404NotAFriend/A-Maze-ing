@@ -10,13 +10,6 @@ class Assets:
                  mlx_ptr: Any,
                  tile_size: int,
                  theme: str) -> None:
-        # MENU BACKGROUND
-        self.title_size = tile_size
-        self.menu_background, _, _ = mlx.mlx_xpm_file_to_image(
-            mlx_ptr,
-            "assets/imgs/menu_background.xpm"
-        )
-
         # WALL
         if theme == "normal":
             wall_file = "light_wall"
@@ -57,4 +50,15 @@ class Assets:
         self.duck, _, _ = mlx.mlx_xpm_file_to_image(
             mlx_ptr,
             f"assets/generated/{theme}_duck_{tile_size}.xpm"
+        )
+
+        # EXIT DOOR (for animation)
+        self.exit, _, _ = mlx.mlx_xpm_file_to_image(
+            mlx_ptr,
+            f"assets/generated/{theme}_exit_{tile_size}.xpm"
+        )
+        # EXIT DOOR VARIANT 2 (for animation)
+        self.exit2, _, _ = mlx.mlx_xpm_file_to_image(
+            mlx_ptr,
+            f"assets/generated/{theme}_exit2_{tile_size}.xpm"
         )

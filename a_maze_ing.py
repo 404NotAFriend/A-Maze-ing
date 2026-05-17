@@ -1,6 +1,7 @@
 from mazegen.MazeGenerator import MazeGenerator
 from parsing.config_parser import parse_config, get_config_path, convert_config
-from render.menu import run_app
+from render.mlx_renderer import mlx_window
+from render.GameState import GameState
 
 
 if __name__ == "__main__":
@@ -15,9 +16,16 @@ if __name__ == "__main__":
                                 config["PERFECT"],
                                 config.get("SEED"))
         maze = mazegen.generate_maze()
-        path = mazegen.solve("bfs")
-        mazegen.export(config["OUTPUT_FILE"])
+        path, explored = mazegen.solve("bfs")
 
-        run_app(maze, path)
+        game = GameState()
+        game.maze = maze
+        game.path = path
+        game.explored = explored
+        game.generator = mazegen
+        game.output_file = config["OUTPUT_FILE"]
+
+        mlx_window(game)
+
     except Exception as e:
         print(f"Error: {e}")

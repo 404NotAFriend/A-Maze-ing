@@ -68,7 +68,7 @@ class MazeGenerator:
                 if not self.perfect:
                     break_walls(maze, logo_pos)
 
-                path = bfs_solve_maze(maze)
+                path, _ = bfs_solve_maze(maze)
                 if path:
                     self.logo_pos = logo_pos
                     self.maze = maze
@@ -79,18 +79,19 @@ class MazeGenerator:
         except (KeyError, Exception) as e:
             raise ValueError(f"generate_maze(): {e}")
 
-    def solve(self, algorithm: str) -> list[tuple[int, int]]:
+    def solve(self, algorithm: str) -> tuple[list[tuple[int, int]],
+                                             list[tuple[int, int]]]:
         """
         Checks for the algorithm to apply,
         and uses it to solve the maze
         """
         if algorithm == "bfs":
-            path = bfs_solve_maze(self.maze)
+            path, explored = bfs_solve_maze(self.maze)
         else:
             raise ValueError("solve(): No algorithm found with that name.")
         self.path = path
-        return path
-
+        self.explored = explored
+        return path, explored
 
     def export(self, output_file: str) -> None:
         """
